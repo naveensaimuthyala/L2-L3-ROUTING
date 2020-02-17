@@ -98,7 +98,7 @@ static inline int get_node_intf_available_slot(node_t *node)
 
     }
     return -1;
-};
+}
 
 
 
