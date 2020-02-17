@@ -30,11 +30,11 @@
 
 #ifndef __GRAPH__
 #define __GRAPH__
- #include "gluethread/glthread.h"
-
+#include "gluethread/glthread.h"
+#include <assert.h>
 #define INTERFACE_NAME_SIZE 17
 #define NODE_NAME_SIZE 17
-#define MAX_INTERFACES_ON_NODE 4
+#define MAX_INTERFACES_ON_NODE 10
 
 /* Forward declarations to avoid recursive dependency of structures interface_t with link and node data structures */
 
@@ -68,5 +68,40 @@ typedef struct graph_{
  glthread_t nodelist;       /* To the glue thread double link list containing all nodes i.e routers */
 
 }graph;
+
+/* Helper Functions */
+
+
+static inline node_t * get_nbr_node(interface_t *interface)
+{   /* The function  returns the pointer to the attched  node 
+        which is connected to the interface passed as an argument.
+
+    */
+
+    return interface->att_node;
+
+}
+
+
+static inline int get_node_intf_available_slot(node_t *node)
+{
+    /*  Assuming that array would contain pointers to interfaces in continuous fashion, that is,  array do not have holes, 
+        This function returns an empty available slot (the index of the array) into which interface address could be stored. 
+        and Returns -1 if no empty slot is available.
+    */
+
+    for(int index=0; index<= MAX_INTERFACES_ON_NODE; index++){
+        if( node->intf[index] == 0)
+        {
+            return index;
+        }
+
+    }
+    return -1;
+};
+
+
+
+
 
 #endif
