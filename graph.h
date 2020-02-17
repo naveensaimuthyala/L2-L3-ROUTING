@@ -50,14 +50,14 @@ typedef struct interface_ {
 
 }interface_t;
 
-typedef struct link_{
+ struct link_{
     interface_t intf1;
     interface_t intf2;
     unsigned int cost;
 
 };
 
-typedef struct node_{
+ struct node_{
     char node_name[ NODE_NAME_SIZE];
     interface_t *intf[MAX_INTERFACES_ON_NODE];
     glthread_t graph_glue;
