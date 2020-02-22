@@ -90,7 +90,7 @@ static inline int get_node_intf_available_slot(node_t *node)
         and Returns -1 if no empty slot is available.
     */
 
-    for(int index=0; index<= MAX_INTERFACES_ON_NODE; index++){
+    for(int index=0; index < MAX_INTERFACES_ON_NODE; index++){
         if( node->intf[index] == 0)
         {
             return index;
