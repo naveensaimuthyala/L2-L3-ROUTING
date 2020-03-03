@@ -95,8 +95,8 @@ static inline int get_node_intf_available_slot(node_t *node)
         This function returns an empty available slot (the index of the array) into which interface address could be stored. 
         and Returns -1 if no empty slot is available.
     */
-
-    for(int index=0; index < MAX_INTERFACES_ON_NODE; index++){
+    int index;
+    for( index=0; index < MAX_INTERFACES_ON_NODE; index++){
         if( node->intf[index] == 0)
         {
             return index;
