@@ -67,7 +67,7 @@ typedef struct graph_{
  char Topology_name[37];  /* To store Topology name of the graph */
  glthread_t nodelist;       /* To the glue thread double link list containing all nodes i.e routers */
 
-}graph;
+}graph_t;
 
 /* Helper Functions */
 
@@ -78,8 +78,14 @@ static inline node_t * get_nbr_node(interface_t *interface)
 
     */
 
-    return interface->att_node;
-
+    assert(interface->att_node);
+    assert(interface->link);                /* Doubt */
+    
+    link_t *link = interface->link;
+    if(&link->intf1 == interface)
+        return link->intf2.att_node;
+    else
+        return link->intf1.att_node;
 }
 
 
