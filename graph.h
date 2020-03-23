@@ -68,6 +68,7 @@ typedef struct graph_{
  glthread_t nodelist;       /* To the glue thread double link list containing all nodes i.e routers */
 
 }graph_t;
+GLTHREAD_TO_STRUCT(graph_glue_to_node, node_t, graph_glue);
 
 /* Helper Functions */
 
@@ -104,6 +105,75 @@ static inline int get_node_intf_available_slot(node_t *node)
 
     }
     return -1;
+}
+
+/*Display Routines*/
+void dump_graph(graph_t *graph);
+void dump_node(node_t *node);
+void dump_interface(interface_t *interface);
+
+
+/* Assignment 2 
+Write a function in graph.h file which returns pointer to the local interface of a node, searched searched by if_name.
+
+static inline interface_t *
+
+get_node_if_by_name(node_t *node, char *if_name
+*/
+static inline interface_t * intfget_node_if_by_name(node_t *node, char *if_name)
+{
+
+    assert( node);
+    assert(if_name);
+    node_t *given_node = node;
+
+    int intf_number=0;
+    while(given_node->intf[intf_number])
+    {
+
+        if( given_node->intf[intf_number]->interface_name == if_name)
+        {
+            return given_node->intf[intf_number];
+
+        }
+        
+        intf_number++;
+    }
+
+
+}
+
+
+/*
+Write a function in graph.h file which returns pointer node present in a graph list, searched by node name.
+
+static inline node_t *
+
+get_node_by_node_name(graph_t *topo, char *node_name)
+
+*/
+
+static inline node_t *
+
+get_node_by_node_name(graph_t *topo, char *node_name)
+{
+
+    assert( topo);
+    assert(node_name);
+
+    glthread_t *curr;
+    node_t *node;
+    
+
+    ITERATE_GLTHREAD_BEGIN(&graph->node_list, curr){
+
+        node = graph_glue_to_node(curr);
+        if(strcmp(node->node_name, node_name) ==0)
+        {
+            return node;
+        }
+    } ITERATE_GLTHREAD_END(&graph->node_list, curr);
+
 }
 
 

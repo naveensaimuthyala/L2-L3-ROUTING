@@ -34,12 +34,6 @@
 
 
 
-
-
-
-
-
-
 graph_t *create_new_graph(char *topology_name)
 {
 
@@ -105,3 +99,41 @@ node2->intf[empty_interface_slot_index]= &new_link->intf2;
 
 }
 
+
+void dump_graph(graph_t *graph){
+
+    glthread_t *curr;
+    node_t *node;
+    
+    printf("Topology Name = %s\n", graph->Topology_name);
+
+    ITERATE_GLTHREAD_BEGIN(&graph->nodelist, curr){
+
+        node = graph_glue_to_node(curr);
+        dump_node(node);    
+    } ITERATE_GLTHREAD_END(&graph->nodelist, curr);
+}
+
+void dump_node(node_t *node){
+
+    unsigned int i = 0;
+    interface_t *intf;
+
+    printf("Node Name = %s : \n", node->node_name);
+    for( ; i < MAX_INTERFACES_ON_NODE; i++){
+        
+        intf = node->intf[i];
+        if(!intf) break;
+        dump_interface(intf);
+    }
+}
+
+void dump_interface(interface_t *interface){
+
+   link_t *link = interface->link;
+   node_t *nbr_node = get_nbr_node(interface);
+
+   printf(" Local Node : %s, Interface Name = %s, Nbr Node %s, cost = %u\n", 
+            interface->att_node->node_name, 
+            interface->interface_name, nbr_node->node_name, link->cost); 
+}
