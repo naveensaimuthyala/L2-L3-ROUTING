@@ -44,9 +44,11 @@ typedef struct link_ link_t;
 
 
 typedef struct interface_ {
-    char interface_name [17];
+    char interface_name [INTERFACE_NAME_SIZE];
     struct node_  *att_node;
     struct link_ *link;
+    intf_nw_props_t intf_nw_props;
+
 
 }interface_t;
 
@@ -61,6 +63,7 @@ typedef struct interface_ {
     char node_name[ NODE_NAME_SIZE];
     interface_t *intf[MAX_INTERFACES_ON_NODE];
     glthread_t graph_glue;
+    node_nw_prop_t node_nw_prop;
 };
 
 typedef struct graph_{
@@ -120,7 +123,10 @@ static inline interface_t *
 
 get_node_if_by_name(node_t *node, char *if_name
 */
-static inline interface_t * intfget_node_if_by_name(node_t *node, char *if_name)
+
+/*
+My code 
+static inline interface_t *get_node_if_by_name(node_t *node, char *if_name)
 {
 
     assert( node);
@@ -131,7 +137,7 @@ static inline interface_t * intfget_node_if_by_name(node_t *node, char *if_name)
     while(given_node->intf[intf_number])
     {
 
-        if( given_node->intf[intf_number]->interface_name == if_name)
+        if(strncmp(given_node->intf->interface_name, if_name, INTERFACE_NAME_SIZE) == 0)
         {
             return given_node->intf[intf_number];
 
@@ -141,6 +147,25 @@ static inline interface_t * intfget_node_if_by_name(node_t *node, char *if_name)
     }
 
 
+}
+
+*/
+
+
+static inline interface_t *
+get_node_if_by_name(node_t *node, char *if_name){
+
+    int i ;
+    interface_t *intf;
+
+    for( i = 0 ; i < MAX_INTERFACES_ON_NODE; i++){
+        intf = node->intf[i];
+        if(!intf) return NULL;
+        if(strncmp(intf->interface_name, if_name, INTERFACE_NAME_SIZE) == 0){
+            return intf;
+        }
+    }
+    return NULL;
 }
 
 
@@ -154,26 +179,18 @@ get_node_by_node_name(graph_t *topo, char *node_name)
 */
 
 static inline node_t *
+get_node_by_node_name(graph_t *topo, char *node_name){
 
-get_node_by_node_name(graph_t *topo, char *node_name)
-{
-
-    assert( topo);
-    assert(node_name);
-
-    glthread_t *curr;
     node_t *node;
-    
+    glthread_t *curr;    
 
-    ITERATE_GLTHREAD_BEGIN(&graph->node_list, curr){
+    ITERATE_GLTHREAD_BEGIN(&topo->node_list, curr){
 
         node = graph_glue_to_node(curr);
-        if(strcmp(node->node_name, node_name) ==0)
-        {
+        if(strncmp(node->node_name, node_name, strlen(node_name)) == 0)
             return node;
-        }
-    } ITERATE_GLTHREAD_END(&graph->node_list, curr);
-
+    } ITERATE_GLTHREAD_END(&topo->node_list, curr);
+    return NULL;
 }
 
 
